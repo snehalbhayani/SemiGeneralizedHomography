@@ -2,6 +2,7 @@
 This code library provides a MATLAB implementation of our proposed minimal solvers for computing semi-generalised homographies for calibrated and partially-calibrated cameras :
 1. Calibrated case : sh5_2, sh5_3, sh5_4, sh4.5_2, sh4.5_3
 2. Partially calibrated case : sh5f_2, sh5f_3
+
 Additionally, we also have two absolute pose solvers designed for our homography setup :
 1. Calibrated case : P3P+N
 2. Partially calibrated case : P5Pf+N
