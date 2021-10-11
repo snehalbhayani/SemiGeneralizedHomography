@@ -1,0 +1,1 @@
+function R=randrot(riktning);% RANDROT - skapar en rotationsmatris som avbildar%           vektorer i riktning 'riktning' mot z-axeln.%           Orienteringen kring denna axel är slumpvis.[u,d,v]=svd(riktning);if det(u)<0, R=(u(:,[2 3 1]))';else R=(u(:,[3 2 1]))';end;fi=rand*2*pi;R=[cos(fi) sin(fi) 0;-sin(fi) cos(fi) 0;0 0 1]*R;

@@ -1,0 +1,53 @@
+-- We define the ring over the field of rational numbers.
+-- Referring to our paper, we note that each gkl, 1<=k<=3, 1<=l<=3, is actually g^{prime}_{kl} in our paper
+-- Similarly, for m1,m2 and m3.
+R = QQ[g11,g12,g13,g21,g22,g23,g31,g32,g33, 
+r11,r12,r13,r21,r22,r23,r31,r32,r33, m1,m2,m3, t1,t2,t3, w ];
+
+-- Rotation matrix
+Rot = matrix {{r11,r12,r13},{r21,r22,r23},{r31,r32,r33}};
+
+-- The transpose of the vector defining the plane
+M = matrix {{m1,m2,m3}};
+
+-- Translation vector
+t = matrix{{t1},{t2},{t3}};
+-- The calibration matrix
+K = matrix {{1_R,0_R,0_R},{0_R,1_R,0_R},{0_R,0_R,w}};
+
+--Identity matrix
+E = matrix {{1_R,0_R,0_R},{0_R,1_R,0_R},{0_R,0_R,1_R}};
+
+-- Semi-generalized homography matrix
+G =  Rot*K - t * M ;
+-- g13 = -g11, g23 = -g21 due to the coordinate transform. 
+
+-- We have the ideal I in 9 unknowns of Rot, 3 of t, 3 from M and w for the unknown focal length case .
+I  = ideal(submatrix(G,{0},{0})-g11, submatrix(G,{0},{1})-g12, submatrix(G,{0},{2})+g11, 
+submatrix(G,{1},{0})-g21, submatrix(G,{1},{1})-g22, submatrix(G,{1},{2})+g21, submatrix(G,{2},{0})-g31, 
+submatrix(G,{2},{1})-g32, submatrix(G,{2},{2})-g33) + minors(1,transpose(Rot)*Rot-E)+ minors(1,Rot*transpose(Rot)-E);
+ 
+gbTrace = 3
+-- We first eliminate the translation vector and the focal length
+I1 = eliminate({t1,t2,t3,w}, I);
+-- and then the rotation matrix
+I1 = eliminate({ r11,r12,r13, r21,r22,r23, r31, r32, r33}, I1);
+
+-- The variable substitution
+I1prime = sub(I1, {g11=> g33*g11, g12=> g33*g12, g21=> g33*g21, g22=> g33*g22, g31=> g33*g31, g32=> g33*g32, m1=> g33*m1, m2=> g33*m2, m3=> g33*m3 });
+
+-- The generator polynomials in the resulting ideal, I1prime have g33 as a trivial factor in all the polynomials which can be removed as 
+-- we assumed that g33 <> 0.
+f0 = factor I1prime_0; f0 = f0#1#0;
+f1 = factor I1prime_1; f1 = f1#1#0;
+f2 = factor I1prime_2; f2 = f2#1#0;
+f3 = factor I1prime_3; f3 = f3#1#0;
+I1prime = ideal({f0,f1,f2,f3});
+I2prime  = eliminate({g33}, I1prime);
+
+-- We consider the minimal generating set of polynomials for I2prime
+f = mingens I2prime;
+-- We notice that there is only polynomial in degree 5
+betti mingens I2prime
+
+"h50f_elim_ideal.txt" << toString f << close;
