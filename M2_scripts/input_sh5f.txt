@@ -50,4 +50,4 @@ f = mingens I2prime;
 -- We notice that there is only polynomial in degree 5
 betti mingens I2prime
 
-"h50f_elim_ideal.txt" << toString f << close;
+"sh5f_ideal.txt" << toString f << close;
